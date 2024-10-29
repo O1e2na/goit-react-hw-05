@@ -65,3 +65,21 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* index.css */
+
+/* Глобальні стилі або скидання */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #f0f0f0;
+  /* Світлий фон для стандартної теми */
+}

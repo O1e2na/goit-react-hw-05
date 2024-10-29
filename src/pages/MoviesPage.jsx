@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { fetchMoviesByQuery } from '../services/api';
-import MovieList from '../components/MovieList';
+import MovieList from '../components/MovieList/MovieList';
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
