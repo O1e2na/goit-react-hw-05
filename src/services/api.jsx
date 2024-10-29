@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.themoviedb.org/3';
-const API_TOKEN = 'Bearer ваш_api_токен';
+const API_URL = 'https://api.themoviedb.org/3f92580067068a661efe5beaa9b0671bd';
+const API_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmOTI1ODAwNjcwNjhhNjYxZWZlNWJlYWE5YjA2NzFiZCIsIm5iZiI6MTczMDIwNjk1Mi41ODA0MzYsInN1YiI6IjY3MWZiMDBlNDI3YzVjMTlmMDI2N2E1ZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._IovASdKHhPw1peT4X5KIHWnmHFozdrZPB41c - lCtFM';
 
 const instance = axios.create({
   baseURL: API_URL,
