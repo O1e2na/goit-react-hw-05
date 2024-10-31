@@ -1,39 +1,37 @@
 // src/pages/HomePage.jsx
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchMoviesStart, fetchMoviesSuccess, fetchMoviesError } from '../redux/reducers/moviesSlice';
+import { useEffect, useState } from 'react';
 import { fetchTrendingMovies } from '../api/movies';
 
 const HomePage = () => {
-    const dispatch = useDispatch();
-    const { items, loading, error } = useSelector((state) => state.movies);
+    const [movies, setMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const loadMovies = async () => {
-            dispatch(fetchMoviesStart());
+        const getMovies = async () => {
             try {
-                const movies = await fetchTrendingMovies();
-                dispatch(fetchMoviesSuccess(movies));
+                const moviesData = await fetchTrendingMovies();
+                setMovies(moviesData);
             } catch (err) {
-                dispatch(fetchMoviesError(err.message));
+                setError(err.message);
+            } finally {
+                setLoading(false);
             }
         };
 
-        loadMovies();
-    }, [dispatch]);
+        getMovies();
+    }, []);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
         <div>
-            {loading && <p>Loading...</p>}
-            {error && <p>Error: {error}</p>}
+            <h1>Trending Movies</h1>
             <ul>
-                {items && items.length > 0 ? (
-                    items.map((movie) => (
-                        <li key={movie.id}>{movie.title}</li>
-                    ))
-                ) : (
-                    <p>No movies found.</p> // Повідомлення, якщо немає фільмів
-                )}
+                {movies.map(movie => (
+                    <li key={movie.id}>{movie.title}</li>
+                ))}
             </ul>
         </div>
     );
