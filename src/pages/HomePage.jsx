@@ -1,46 +1,41 @@
+// src/pages/HomePage.jsx
 import { useEffect } from 'react';
+import { fetchTrendingMovies } from '../api/movies'; // Переконайтеся, що шлях вірний
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMoviesStart, fetchMoviesSuccess, fetchMoviesError } from '../redux/reducers/moviesSlice'; // імпортуйте ваші дії
-import { fetchTrendingMovies } from '../api/movies'; // ваш API для отримання даних
+import { setMovies, setLoading, setError } from '../redux/actions'; // Ваші дії
 
 const HomePage = () => {
-    const dispatch = useDispatch();
-    
-    // Витягуємо дані з Redux store
-    const movies = useSelector((state) => state.movies.items);
-    const loading = useSelector((state) => state.movies.loading);
-    const error = useSelector((state) => state.movies.error);
+  const dispatch = useDispatch();
+  const { movies, loading, error } = useSelector(state => state.yourSlice); // Змінити 'yourSlice' на ваш редюсер
 
-    // Використовуємо useEffect для отримання фільмів
-    useEffect(() => {
-        const fetchMovies = async () => {
-            dispatch(fetchMoviesStart());
-            try {
-                const data = await fetchTrendingMovies();
-                dispatch(fetchMoviesSuccess(data.results)); // Або інша відповідна структура даних
-            } catch (error) {
-                dispatch(fetchMoviesError(error.message));
-            }
-        };
+  useEffect(() => {
+    const loadMovies = async () => {
+      dispatch(setLoading(true));
+      try {
+        const movies = await fetchTrendingMovies();
+        dispatch(setMovies(movies));
+      } catch (error) {
+        dispatch(setError(error.message));
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
 
-        fetchMovies();
-    }, [dispatch]);
+    loadMovies();
+  }, [dispatch]);
 
-    return (
-        <div>
-            <h1>Trending Movies</h1>
-            {/* Показуємо стан завантаження */}
-            {loading && <p>Loading...</p>}
-            {/* Показуємо помилку, якщо є */}
-            {error && <p>Error: {error}</p>}
-            {/* Відображаємо список фільмів */}
-            <ul>
-                {movies.map(movie => (
-                    <li key={movie.id}>{movie.title}</li> // Замініть 'title' на поле вашого об'єкта фільму
-                ))}
-            </ul>
+  return (
+    <div>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+      {movies && movies.map(movie => (
+        <div key={movie.id}>
+          <h3>{movie.title}</h3>
+          {/* Відобразити інші деталі фільму */}
         </div>
-    );
+      ))}
+    </div>
+  );
 };
 
 export default HomePage;

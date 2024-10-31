@@ -1,10 +1,10 @@
 // src/redux/reducers/index.js
 import { combineReducers } from 'redux';
-import moviesReducer from './moviesSlice';
+import yourSlice from './yourSlice'; // замініть на ваші слайси
 
 const rootReducer = combineReducers({
-    movies: moviesReducer, 
-
+    yourSlice, // ваш редюсер
+    // додайте інші редюсери, якщо є
 });
 
 export default rootReducer;
