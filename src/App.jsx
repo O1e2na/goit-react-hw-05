@@ -1,27 +1,25 @@
-import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// src/App.jsx
+import { Suspense, lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation';
-import HomePage from './pages/HomePage';
-import MoviesPage from './pages/MoviesPage';
+
+// Динамічний імпорт сторінок
+const HomePage = lazy(() => import('./pages/HomePage'));
+const MoviesPage = lazy(() => import('./pages/MoviesPage'));
+const MovieDetailsPage = lazy(() => import('./pages/MovieDetailsPage'));
 
 const App = () => {
-  const [darkTheme, setDarkTheme] = useState(false);
-
-  const toggleTheme = () => {
-    setDarkTheme(prevTheme => !prevTheme);
-  };
-
   return (
-    <Router>
-      <Navigation darkTheme={darkTheme} />
-      <button onClick={toggleTheme}>
-        {darkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-      </button>
-      <Routes>
-        <Route path="/" element={<HomePage darkTheme={darkTheme} />} />
-        <Route path="/movies" element={<MoviesPage />} />
-      </Routes>
-    </Router>
+    <div>
+      <Navigation darkTheme={true} /> {/* додайте darkTheme пропс */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/movies/:movieId" element={<MovieDetailsPage />} />
+        </Routes>
+      </Suspense>
+    </div>
   );
 };
 

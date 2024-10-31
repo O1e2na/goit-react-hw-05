@@ -1,30 +1,22 @@
-import { useParams, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { fetchMovieDetails } from '../services/api';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
-  const [movie, setMovie] = useState(null);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    fetchMovieDetails(movieId).then(setMovie);
+    
   }, [movieId]);
 
   const goBack = () => {
-    navigate(location.state?.from || '/movies');
+    window.history.back(); 
   };
 
-  if (!movie) return null;
-
   return (
-    <>
-      <button onClick={goBack}>Go back</button>
-      <h1>{movie.title}</h1>
-      <p>{movie.overview}</p>
-      <Outlet />
-    </>
+    <div>
+      <button onClick={goBack}>Go Back</button>
+      {/* Відображення деталей фільму */}
+    </div>
   );
 };
 

@@ -1,25 +1,34 @@
-import { useState } from 'react';
-import { fetchMoviesByQuery } from '../services/api';
-import MovieList from '../components/MovieList/MovieList';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { fetchMoviesByQuery } from '../api/movies';
+import SearchBox from '../components/SearchBox/SearchBox'; 
+import MovieList from '../components/MovieList/MovieList'; 
 
 const MoviesPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [movies, setMovies] = useState([]);
-  const [query, setQuery] = useState('');
+  const query = searchParams.get('query') || '';
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const data = await fetchMoviesByQuery(query);
-    setMovies(data.results);
+  useEffect(() => {
+    const getMovies = async () => {
+      if (query) {
+        const movies = await fetchMoviesByQuery(query);
+        setMovies(movies);
+      }
+    };
+
+    getMovies();
+  }, [query]);
+
+  const handleSearch = (newQuery) => {
+    setSearchParams({ query: newQuery });
   };
 
   return (
-    <>
-      <form onSubmit={handleSearch}>
-        <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} />
-        <button type="submit">Search</button>
-      </form>
+    <div>
+      <SearchBox onSearch={handleSearch} />
       <MovieList movies={movies} />
-    </>
+    </div>
   );
 };
 

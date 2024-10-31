@@ -1,16 +1,32 @@
-import PropTypes from 'prop-types';
+// src/pages/HomePage.jsx
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTrendingMovies } from '../api/movies';
+import MovieList from '../components/MovieList/MovieList';
 
-const HomePage = ({ darkTheme }) => {
+const HomePage = () => {
+  const dispatch = useDispatch();
+  const trendingMovies = useSelector(state => state.movies.trendingMovies);
+
+  useEffect(() => {
+    const getTrendingMovies = async () => {
+      try {
+        const movies = await fetchTrendingMovies();
+        dispatch({ type: 'SET_TRENDING_MOVIES', payload: movies });
+      } catch (error) {
+        console.error('Failed to fetch trending movies:', error);
+      }
+    };
+
+    getTrendingMovies();
+  }, [dispatch]);
+
   return (
-    <div style={{ backgroundColor: darkTheme ? '#222' : '#f4f4f4', color: darkTheme ? '#fff' : '#000' }}>
-      <h1>Home Page</h1>
-      {/* Additional homepage content */}
+    <div>
+      <h1>Trending Movies</h1>
+      <MovieList movies={trendingMovies} />
     </div>
   );
-};
-
-HomePage.propTypes = {
-  darkTheme: PropTypes.bool.isRequired,
 };
 
 export default HomePage;
