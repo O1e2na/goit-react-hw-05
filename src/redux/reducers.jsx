@@ -1,6 +1,6 @@
 // src/redux/reducers.js
 import { combineReducers } from '@reduxjs/toolkit';
-import moviesReducer from './moviesReducer'; // або з іншого файлу, якщо у тебе є
+import moviesReducer from './moviesReducer'; 
 
 const rootReducer = combineReducers({
   movies: moviesReducer,

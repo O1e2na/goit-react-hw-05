@@ -1,41 +1,42 @@
 // src/pages/HomePage.jsx
 import { useEffect } from 'react';
-import { fetchTrendingMovies } from '../api/movies'; // Переконайтеся, що шлях вірний
 import { useDispatch, useSelector } from 'react-redux';
-import { setMovies, setLoading, setError } from '../redux/actions'; // Ваші дії
+import { fetchMoviesStart, fetchMoviesSuccess, fetchMoviesError } from '../redux/reducers/moviesSlice';
+import { fetchTrendingMovies } from '../api/movies';
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-  const { movies, loading, error } = useSelector(state => state.yourSlice); // Змінити 'yourSlice' на ваш редюсер
+    const dispatch = useDispatch();
+    const { items, loading, error } = useSelector((state) => state.movies);
 
-  useEffect(() => {
-    const loadMovies = async () => {
-      dispatch(setLoading(true));
-      try {
-        const movies = await fetchTrendingMovies();
-        dispatch(setMovies(movies));
-      } catch (error) {
-        dispatch(setError(error.message));
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
+    useEffect(() => {
+        const loadMovies = async () => {
+            dispatch(fetchMoviesStart());
+            try {
+                const movies = await fetchTrendingMovies();
+                dispatch(fetchMoviesSuccess(movies));
+            } catch (err) {
+                dispatch(fetchMoviesError(err.message));
+            }
+        };
 
-    loadMovies();
-  }, [dispatch]);
+        loadMovies();
+    }, [dispatch]);
 
-  return (
-    <div>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-      {movies && movies.map(movie => (
-        <div key={movie.id}>
-          <h3>{movie.title}</h3>
-          {/* Відобразити інші деталі фільму */}
+    return (
+        <div>
+            {loading && <p>Loading...</p>}
+            {error && <p>Error: {error}</p>}
+            <ul>
+                {items && items.length > 0 ? (
+                    items.map((movie) => (
+                        <li key={movie.id}>{movie.title}</li>
+                    ))
+                ) : (
+                    <p>No movies found.</p> // Повідомлення, якщо немає фільмів
+                )}
+            </ul>
         </div>
-      ))}
-    </div>
-  );
+    );
 };
 
 export default HomePage;
