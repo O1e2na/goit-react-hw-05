@@ -1,30 +1,41 @@
-import { useParams, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { fetchMovieDetails } from '../services/api';
+import { useEffect, useState, useRef } from 'react';
+import { useParams, useLocation, Link, Routes, Route } from 'react-router-dom';
+import { fetchMovieDetails } from '../api/movies';
+import Cast from '../components/Cast/Cast';
+import Reviews from '../components/Reviews/Reviews';
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
-  const [movie, setMovie] = useState(null);
-  const navigate = useNavigate();
   const location = useLocation();
+  const [movie, setMovie] = useState(null);
+  const previousLocation = useRef(location.state?.from || '/');
 
   useEffect(() => {
-    fetchMovieDetails(movieId).then(setMovie);
+    const getMovieDetails = async () => {
+      const movieData = await fetchMovieDetails(movieId);
+      setMovie(movieData);
+    };
+
+    getMovieDetails();
   }, [movieId]);
 
-  const goBack = () => {
-    navigate(location.state?.from || '/movies');
-  };
-
-  if (!movie) return null;
+  if (!movie) return <p>Loading...</p>;
 
   return (
-    <>
-      <button onClick={goBack}>Go back</button>
+    <div>
+      <Link to={previousLocation.current}>Go back</Link>
       <h1>{movie.title}</h1>
       <p>{movie.overview}</p>
-      <Outlet />
-    </>
+      <ul>
+        <li><Link to="cast">Cast</Link></li>
+        <li><Link to="reviews">Reviews</Link></li>
+      </ul>
+
+      <Routes>
+        <Route path="cast" element={<Cast />} />
+        <Route path="reviews" element={<Reviews />} />
+      </Routes>
+    </div>
   );
 };
 

@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
+// src/components/MovieList/MovieList.jsx
 import { Link, useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const MovieList = ({ movies }) => {
   const location = useLocation();
+
   return (
     <ul>
       {movies.map(movie => (
