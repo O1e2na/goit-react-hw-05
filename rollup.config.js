@@ -1,10 +1,14 @@
 import { defineConfig } from 'rollup';
+import postcss from 'rollup-plugin-postcss';
 
 export default defineConfig({
-  input: 'src/main.js',
+  input: 'src/main.jsx',
   output: {
     file: 'dist/bundle.js',
     format: 'es',
   },
-  plugins: [],
+  plugins: [
+    postcss(), // Додайте цей плагін для підтримки імпорту CSS
+  ],
 });
+
