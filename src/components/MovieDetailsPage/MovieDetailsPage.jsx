@@ -8,18 +8,29 @@ const MovieDetailsPage = () => {
   const { movieId } = useParams();
   const location = useLocation();
   const [movie, setMovie] = useState(null);
+  const [error, setError] = useState(null);
   const previousLocation = useRef(location.state?.from || '/');
 
   useEffect(() => {
     const getMovieDetails = async () => {
-      const movieData = await fetchMovieDetails(movieId);
-      setMovie(movieData);
+      try {
+        const movieData = await fetchMovieDetails(movieId);
+        setMovie(movieData);
+      } catch (error) {
+        setError('Error fetching movie details');
+      }
     };
 
     getMovieDetails();
   }, [movieId]);
 
-  if (!movie) return <p>Loading...</p>;
+  if (error) {
+    return <p>{error}</p>; // Вивести помилку, якщо вона є
+  }
+
+  if (!movie) {
+    return <p>Loading...</p>; // Індикатор завантаження
+  }
 
   return (
     <div>
